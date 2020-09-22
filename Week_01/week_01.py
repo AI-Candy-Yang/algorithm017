@@ -21,6 +21,26 @@ def moveZeroes(nums):
 
     print(nums)
 
+#两数之和
+def twoSum(nums, target):
+    if len(nums) < 2:
+        return []
+
+    n = len(nums)
+    # 排序加双指针
+    nums.sort()
+    l = 0
+    r = n - 1
+    while l < r:
+        sum1 = nums[l] + nums[r]
+        if sum1 < target:
+            l += 1
+        elif sum1 > target:
+            r -= 1
+        else:
+            return [l,r]
+
 
 if __name__ =='__main__':
-    moveZeroes([0,1,0,3,12])
+    # moveZeroes([0,1,0,3,12])
+    print(twoSum([2, 7, 11, 15],9))
