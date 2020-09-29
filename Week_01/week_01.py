@@ -380,7 +380,36 @@ def largestRectangleArea(heights):
         stack.append(i)
     return res
 
+import collections
 #11.滑动窗口最大值
+def maxSlidingWindow(nums,k):
+    #采用双端队列
+    if len(nums) < 2:
+        return nums
+    queue = collections.deque()
+    res = []
+    for i in range(len(nums)):
+        #将元素加入双端队列，保证从大到小排序，新加入的如果比队尾元素大，则删除队尾元素，加入新得元素
+        while queue and nums[queue[-1]] < nums[i]:
+            queue.pop()
+
+        #当队列为空，或加入的元素比队尾元素小，则直接加入队列
+        queue.append(i)
+
+        #判断队首是否在窗口内部
+        if queue[0] <= i - k:
+            queue.popleft()
+
+        #当窗口长度为k时加入队首元素到结果列表
+        if i + 1 >= k:
+            res.append(nums[queue[0]])
+
+        return res
+
+
+
+
+
 
 if __name__ =='__main__':
     # moveZeroes([0,1,0,3,12])
