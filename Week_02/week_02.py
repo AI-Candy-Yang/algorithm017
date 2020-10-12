@@ -6,10 +6,6 @@ class TreeNode:
         self.right = right
 #本周练习
 #1.哈希表，映射，集合
-#1.有效的字母异位词
-#2.字母异位词分组
-#3.两数之和
-
 #2.树，二叉树
 #1.二叉树的中序遍历
 def inorderTraversal(self, root: TreeNode):
@@ -94,14 +90,10 @@ def preorder(self, root: 'Node'):
     return res
 
 
-
-#5.N叉树的层序遍历
-
 #3.堆，二叉堆
 #1.最小的k个数
 #2.滑动窗口最大值
-#3.丑数
-#4.前K个高频元素
+
 
 #本周作业
 #1.有效的字母异位词（每个字母出现的次数是一样的，但是位置不一样）
@@ -179,7 +171,6 @@ def preorderTraversal(self, root: TreeNode):
         if cur.left:
             stack.append(cur.left)
     return res
-
 
 
 #7.N叉树的层序遍历
