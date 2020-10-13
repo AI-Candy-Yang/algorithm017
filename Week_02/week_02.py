@@ -71,6 +71,25 @@ class Node:
         return res
 
 #1.最小的k个数
+import heapq
+def getLeastNumbers(arr, k):
+    #通过堆来实现 要求的是最小的K个值，那么需要每次将较大的元素替换出去，因此需要维护一个大根堆
+    #python 默认的是小根堆  因此需要取相反数
+    #每个元素插入删除的时间复杂度都是O(logk)  总的时间复杂度为O(nlogk)
+    if k == 0:
+        return []
+    #取数组里面前k个元素的相反数
+    arr = [-x for x in arr[:k]]
+    #构建最小堆
+    hp = heapq.heapify(arr)
+    for i in range(k,len(arr)):
+        if -hp[0] > arr[i]:
+            heapq.heappop(hp)
+            heapq.heappush(hp,-arr[i])
+    #最后取出堆上的元素
+    res = [-x for x in hp]
+    return res
+
 #2.滑动窗口最大值
 
 
@@ -110,9 +129,13 @@ def isAnagram(s, t):
     return True
 
 #2.两数之和
-
-
-
+def twoSum(nums, target):
+    #思路：采用哈希表，哈希表查找元素的时间复杂度为O(1)
+    hash_dict = {}
+    for i,num in enumerate(nums):
+        if (target - num) in hash_dict:
+            return [hash_dict[target-num],i]
+        hash_dict[num] = i
 
 #4.字母异位词分组
 def groupAnagrams(strs):
