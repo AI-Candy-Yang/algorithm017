@@ -91,6 +91,30 @@ def getLeastNumbers(arr, k):
     return res
 
 #2.滑动窗口最大值
+def maxSlidingWindow(nums,k):
+    #解法一：采用双端队列 新插入的元素和队尾值比较，大于队尾值，则删除队尾值，加入新的元素，小于则直接加入，队列始终是从大到小排列的
+    if len(nums) < 2:
+        return nums
+    #构建双端队列
+    queue = collections.deque()
+    #初始化结果列表
+    res = []
+    #遍历所有的元素下标
+    for i in range(len(nums)):
+        #新加入的元素和队尾比较，小于则删除
+        while queue and nums[queue[-1]] < nums[i]:
+            queue.pop()
+        #上面情况不满足，则直接加入元素
+        queue.append(i)
+
+        #判断队首元素是否在当前窗口内，不是的话需要删除队首元素
+        if queue[0] <= i - k:
+            queue.popleft()
+
+        #取出满足条件的值 下标从0开始 只有i+1 >= k 才能形成窗口
+        if i - k + 1 >= 0:
+            res.append(nums[queue[-1]])
+    return res
 
 
 #本周作业
@@ -211,4 +235,35 @@ class Solution:
         return res
 
 #8.丑数
+def nthUglyNumber(n):
+    #使用动态规划 相当于从小到大合并三个数组
+    dp = [1] * n
+    a,b,c = 0,0,0
+    for i in range(1,n):
+        n2,n3,n5 = dp[a] * 2,dp[b] * 3,dp[c] * 5
+        dp[i] = min(n2,n3,n5)
+        if dp[i] == n2:
+            a += 1
+        if dp[i] == n3:
+            b += 1
+        if dp[i] == n5:
+            c += 1
+    return dp[-1]
+
 #9.前K个高频元素
+def topKFrequent(nums, k):
+    #解法一:使用python自带的计数器实现
+    # return [x[0] for x in collections.Counter(nums).most_common(k)]
+
+    #解法二：构建最小堆来实现
+    dict1 = collections.Counter(nums)
+    hp,res = [],[]
+    for key in dict1.keys():
+        #将频次和数添加到堆上  python构建的是最小堆  使用频次的相反数，频次最大的为根节点
+        heapq.heappush(hp,(-dict1[key],key))
+
+    #依次取出堆顶的K个元素
+    for _ in range(k):
+        res.append(heapq.heappop(hp)[1])
+    return res
+
