@@ -5,8 +5,7 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
-#本周练习
-#1.哈希表，映射，集合
+
 #2.树，二叉树
 class Node:
     def __init__(self, val=None, children=None):
@@ -90,7 +89,7 @@ def getLeastNumbers(arr, k):
     res = [-x for x in hp]
     return res
 
-#2.滑动窗口最大值
+#2.滑动窗口最大值  双端队列
 def maxSlidingWindow(nums,k):
     #解法一：采用双端队列 新插入的元素和队尾值比较，大于队尾值，则删除队尾值，加入新的元素，小于则直接加入，队列始终是从大到小排列的
     if len(nums) < 2:
