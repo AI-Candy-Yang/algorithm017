@@ -174,7 +174,6 @@ class Solution:
             return root
         return helper(0,n-1,0,n-1)
 
-
 #组合
 #全排列
 #全排列II
@@ -204,5 +203,40 @@ def subsets(nums):
 #电话号码的字母组合
 #N皇后
 
+# def combinationSum(cur,sums,target):
+#     if target == 0:
+#         print(cur)
+#         return
+#     for i in range(len(sums)):
+#         if target < sums[i]:
+#             continue
+#         cur.append(sums[i])
+#         combinationSum(cur,sums,target-sums[i])
+#         cur.pop(len(cur) - 1)
+
+def combine(n, k):
+    res = []
+    if k <= 0 or n < k:
+        return res
+    path = []
+    helper(n,k,1, path, res)
+    return res
+
+def helper(n,k,start,path,res):
+    if len(path) == k:
+        res.append(path)
+        return
+    #遍历进行多次递归
+    for i in range(start,n+1):
+        #向路径中加入一个数
+        path.append(i)
+        #下一层递归
+        helper(n,k,i + 1,path,res)
+        #避免分支污染，在切换分支的时候需要将当前分支的数据删除
+        path.pop()
+
+
 if __name__ == '__main__':
-    print(generateParenthesis(3))
+    # print(generateParenthesis(3))
+    # combinationSum([],[2,3,5],8)
+    print(combine(4,2))
