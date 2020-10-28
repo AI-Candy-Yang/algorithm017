@@ -16,9 +16,9 @@
 [1]递归终止条件
 [2]处理当前逻辑（处理当前问题，分解子问题）
 [3]递归处理子问题
-[4]生成最终的结果
+[4]将子问题的结果进行合并，生成最终的结果
 
-3.回溯，也是递归的思想，用一般的递归模板即可
+3.回溯，也是递归的思想，用一般的递归模板即可,需要remove current state
 
 3.括号生成问题 使用一个栈来维护每次的状态，根据条件每次选择左括号还是右括号
 """
@@ -175,15 +175,58 @@ class Solution:
         return helper(0,n-1,0,n-1)
 
 #组合
+def combine(n, k):
+    #递归 和括号生成的问题道理一样 有K个位置 每个位置可以放对应的元素
+    def helper(ans,tmp,n,k,begin):
+        #递归终止条件
+        if len(tmp) == k:
+            ans.append(tmp)
+            return
+
+        #处理当前层的逻辑
+        for i in range(begin,n+1):
+            #将当前层的元素加入列表
+            tmp.append(i)
+            #递归下一层节点 如果不用tmp.copy() 则添加到ans里面的元素会随着tmp的变化而变化
+            helper(ans,tmp.copy(),n,k,i + 1)
+            #回到当前层，移除当前层的选择
+            tmp.pop()
+    ans = []
+    helper(ans,[],n,k,1)
+    return ans
+
 #全排列
+def permute(nums):
+    #递归解决，分成多叉树
+    def helper(ans,tmp,nums):
+        #递归终止条件
+        if len(tmp) == len(nums):
+            ans.append(tmp)
+            return
+
+        #处理当前层逻辑
+        for i in range(0,len(nums)):
+            #排除已经选择过的
+            if nums[i] in tmp:
+                continue
+            tmp.append(nums[i])
+            helper(ans,tmp.copy(),nums)
+            tmp.pop()
+    ans = []
+    helper(ans,[],nums)
+    return ans
+
 #全排列II
 #Pow(x,n)
 def myPow(x,n):
-    #使用分治求解
+    #使用分治求解 自顶向下将大问题逐步分解成小的子问题
     def helper(n):
+        #终止条件
         if n == 0:
             return 1
+        #当前层的逻辑处理n //2 递归子问题
         y = helper(n // 2)
+        #合并结果进行返回
         return y * y if n % 2 == 0 else y * y * x
     return helper(n) if n >= 0 else 1.0 / helper(-n)
 
@@ -194,49 +237,118 @@ def subsets(nums):
     # [[],[1]]
     # [[],[1],[2],[1,2]
     # [[],[1],[2],[3],[1,3],[2,3],[1,2,3]
-    res = [[]]
-    for i in nums:
-        res = res + [[i] + num for num in res]
-    return res
+    # res = [[]]
+    # for i in nums:
+    #     res = res + [[i] + num for num in res]
+    # return res
+
+    #解法二 递归 类似于括号生成的问题，对于每个数字，每次可以选或不选
+    def helper(ans, nums, list, index):
+        # 递归终止条件
+        if index == len(nums):
+            ans.append(list)
+            return
+
+            # 处理当前层，选或不选，递归子问题
+        helper(ans, nums, list, index + 1)  # 不添加元素到list
+
+        list.append(nums[index])  # 添加元素到List
+        helper(ans, nums, list.copy(), index + 1)
+
+        # 每个子问题处理之后需要将list面元素去掉
+        list.pop()
+
+    ans = []
+    helper(ans, nums, [], 0)
+    return ans
+
 
 #多数元素
 #电话号码的字母组合
+def letterCombinations(digits):
+        phoneMap = {
+            "2": "abc",
+            "3": "def",
+            "4": "ghi",
+            "5": "jkl",
+            "6": "mno",
+            "7": "pqrs",
+            "8": "tuv",
+            "9": "wxyz",
+        }
+        #创建递归函数
+        def helper(i,digits,ans,tmp):
+            """
+            :param i: 表示第几个数字
+            :param digits: 原始输入数字字符串
+            :param ans: 结果列表
+            :param tmp: 可能的字符列表
+            :return:
+            """
+            #递归终止条件
+            if i == len(digits):
+                ans.append(''.join(tmp))
+                return
+
+            #处理当前层的逻辑
+            for ch in phoneMap[digits[i]]:
+                tmp.append(ch)
+                #递归处理子问题
+                helper(i + 1,digits,ans,tmp)
+                tmp.pop()
+
+        ans = []
+        helper(0,digits,ans,[])
+        return ans
+
 #N皇后
+def solveNQueens(n):
+    cols = []
+    pie = []
+    na = []
+    #递归每一行，记录可以存放的列
+    def helper(ans,n,row,tmp):
+        #递归终止条件
+        if row >= n:
+            ans.append(tmp)
+            return
 
-# def combinationSum(cur,sums,target):
-#     if target == 0:
-#         print(cur)
-#         return
-#     for i in range(len(sums)):
-#         if target < sums[i]:
-#             continue
-#         cur.append(sums[i])
-#         combinationSum(cur,sums,target-sums[i])
-#         cur.pop(len(cur) - 1)
+        #处理当前层的逻辑，即找出可以放皇后的列，并且将下一层不能放的位置都添加到对应的列表
+        for col in range(n):
+            if col in cols or row+col in pie or row-col in na:
+                continue
 
-def combine(n, k):
-    res = []
-    if k <= 0 or n < k:
-        return res
-    path = []
-    helper(n,k,1, path, res)
-    return res
+            #否则,找到可以放的列
+            cols.append(col)
+            pie.append(row+col)
+            na.append(row-col)
 
-def helper(n,k,start,path,res):
-    if len(path) == k:
-        res.append(path)
-        return
-    #遍历进行多次递归
-    for i in range(start,n+1):
-        #向路径中加入一个数
-        path.append(i)
-        #下一层递归
-        helper(n,k,i + 1,path,res)
-        #避免分支污染，在切换分支的时候需要将当前分支的数据删除
-        path.pop()
+            #递归到下一行
+            helper(ans,n,row+1,tmp.copy() + [col])
+
+            #清除当前层的状态
+            cols.pop()
+            pie.pop()
+            na.pop()
+
+    ans = []
+    helper(ans,n,0,[])
+
+    result = []
+    for item_lst in ans:
+        sub_lst = []
+        for i in item_lst:
+            sub_lst.append('.'*i + 'Q' + '.'*(n-i-1))
+        result.append(sub_lst)
+    return result
+
 
 
 if __name__ == '__main__':
     # print(generateParenthesis(3))
     # combinationSum([],[2,3,5],8)
-    print(combine(4,2))
+    # print(combine(4,2))
+    # print(letterCombinations('23'))
+    # print(subsets([1,2,3]))
+    print(permute([1,2,3]))
+
